@@ -6,5 +6,4 @@ public class HelloWorldTest {
     public void testHelloWorld(){
         System.out.println("Hello From Tilin Dmitry");
     }
-
 }

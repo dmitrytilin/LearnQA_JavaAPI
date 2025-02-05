@@ -11,5 +11,4 @@ public class TestGETHW {
                 .andReturn();
         response.prettyPrint();
     }
-
 }

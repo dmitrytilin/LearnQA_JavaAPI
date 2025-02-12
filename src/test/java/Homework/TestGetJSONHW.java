@@ -8,7 +8,7 @@ public class TestGetJSONHW {
 
   @Test
   public void getJSONHW(){
-    JsonPath response = RestAssured 
+    JsonPath response = RestAssured
 
             .get("https://playground.learnqa.ru/api/get_json_homework")
             .jsonPath();

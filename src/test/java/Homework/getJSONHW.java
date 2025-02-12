@@ -1,4 +1,4 @@
-package Practice;
+package Homework;
 
 import io.restassured.RestAssured;
 import io.restassured.path.json.JsonPath;
@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 public class getJSONHW {
 
   @Test
-  public void getJSONHW(){
+  public void GetJSONHW(){
     JsonPath response = (JsonPath) RestAssured
 
             .get("https://playground.learnqa.ru/api/get_json_homework")

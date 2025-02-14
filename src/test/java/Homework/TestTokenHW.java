@@ -34,6 +34,9 @@ public class TestTokenHW {
         waitForDelay(delay);
       } else if (i == 2) {
         processStatus(response.get("status"), "Job is ready");
+        if (response.get("result") != null){
+          System.out.println("Job result is: " + response.get("result") + " - Test Passed");
+        } else System.out.println("Job result is: " + response.get("result") + "Expected \"result\" is not \"null\" - Test Failed");
       }
     }
   }

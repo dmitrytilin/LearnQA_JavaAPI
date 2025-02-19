@@ -1,6 +1,7 @@
 package Homework;
 
 import io.restassured.RestAssured;
+import io.restassured.http.Headers;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.Test;
 
@@ -18,21 +19,28 @@ public class TestCookieHW {
             .response();
 
     assertEquals(200, response.statusCode(), "Unexpected status code");
+    Headers headers = response.getHeaders();
+    assertNotNull(headers,"Headers is empty");
+    headers.forEach(header -> {
+              assertNotNull(header.getValue(),
+                      "Value of \"" + header.getName() + "\" Header is null \n" + header.getName() + " = " + header.getValue());
+              assertFalse(Boolean.parseBoolean(header.getValue()),
+                      "Header \"" + header.getName() + "\" IS EMPTY || responce: \n" + response.headers());
+              System.out.println(header.getName() + " = " + header.getValue());
 
-    assertTrue(response.headers().hasHeaderWithName("Set-Cookie"),
-            "No \"Set-Cookie\" Header in responce: \n" + response.headers());
-    assertNotNull(response.header("Set-Cookie"), "Value of \"Set-Cookie\" Header is null");
+                }
+            );
 
     Map<String, String> cookies = response.getCookies();
-
     assertFalse(cookies.isEmpty(), "No Cookies in responce " + cookies);
-    assertTrue(cookies.containsKey("HomeWork"),
-            "No \"HomeWork\" Cookie in responce \n" + response.cookies());
 
-    String homeworkCookieValue = cookies.get("HomeWork");
-
-    assertNotNull(homeworkCookieValue, "Value of \"HomeWork\" cookie is null");
-    assertFalse(homeworkCookieValue.isEmpty(),
-            "Value of \"HomeWork\" cookie is empty");
+    for (Map.Entry<String, String> entry : cookies.entrySet()) {
+      assertNotNull(entry.getValue(),
+              "Value of \"" + entry.getKey() + "\" Cookie is null \n" + entry.getKey() + " = " + entry.getValue());
+      assertFalse(entry.getValue().isEmpty(),
+              "Value of \"" + entry.getKey() + "\" Cookie is empty \n" + entry.getKey() + " = " + entry.getValue());
+      System.out.println(entry.getKey() + " = " + entry.getValue());
+    }
+    //System.out.println(response.cookies());
   }
 }

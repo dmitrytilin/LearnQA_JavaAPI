@@ -1,4 +1,4 @@
-package Homework;
+package Practice;
 
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
@@ -9,14 +9,17 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TestCookiesHW {
-  String Url = "https://playground.learnqa.ru/api/homework_cookie";
+public class TestCookiesHWv {
   private Map<String, String> expectedCookies;
 
   @BeforeEach
   public void initialRequest() {
     // Первый запрос для получения эталонных кук
-    Response response = makeGetRequest(Url);
+    Response response = RestAssured
+            .get("https://playground.learnqa.ru/api/homework_cookie")
+            .then()
+            .extract()
+            .response();
 
     assertEquals(200, response.statusCode(), "Unexpected status code");
 
@@ -27,20 +30,17 @@ public class TestCookiesHW {
   @Test
   public void testCookiesHW() {
     // Второй запрос для проверки кук
-    Response response = makeGetRequest(Url);
-
-
-
+    Response response = RestAssured
+            .get("https://playground.learnqa.ru/api/homework_cookie")
+            .then()
+            .extract()
+            .response();
 
     assertEquals(200, response.statusCode(), "Unexpected status code");
 
     // Получаем куки из второго запроса
     Map<String, String> actualCookies = response.getCookies();
 
-    /*actualCookies.forEach((name, Value) -> {
-              System.out.println(name + " = " + Value);
-              }
-            );*/
     // Проверка наличия кук
     assertNotNull(actualCookies, "Cookies should not be null");
     assertFalse(actualCookies.isEmpty(), "No cookies in response");
@@ -66,12 +66,5 @@ public class TestCookiesHW {
     actualCookies.forEach((name, value) ->
             System.out.println("Cookie: " + name + " = " + value)
     );
-  }
-  private Response makeGetRequest(String url){
-    return RestAssured
-            .get(url)
-            .then()
-            .extract()
-            .response();
   }
 }

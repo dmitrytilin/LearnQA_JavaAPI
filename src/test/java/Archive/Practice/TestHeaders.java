@@ -1,4 +1,4 @@
-package Practice;
+package Archive.Practice;
 
 import io.restassured.RestAssured;
 import io.restassured.response.Response;

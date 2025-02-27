@@ -1,0 +1,67 @@
+import io.restassured.RestAssured;
+import io.restassured.path.json.JsonPath;
+import org.junit.Test;
+
+import java.util.concurrent.TimeUnit;
+
+public class TestTokenHW {
+
+    @Test
+    public void testTokenHW() {
+        String location = "https://playground.learnqa.ru/ajax/api/longtime_job";
+
+        // Первый запрос для получения токена и времени задержки
+        JsonPath firstResponse = makeGetRequest(location);
+        String token = firstResponse.get("token");
+        int delay = firstResponse.get("seconds");
+
+        // Второй запрос с токеном для проверки статуса
+        JsonPath secondResponse = makeGetRequestWithToken(location, token);
+        checkStatus(secondResponse.get("status"), "Job is NOT ready");
+
+        // Ожидание завершения задачи
+        waitForDelay(delay);
+
+        // Третий запрос с токеном для проверки завершенного статуса
+        JsonPath thirdResponse = makeGetRequestWithToken(location, token);
+        checkStatus(thirdResponse.get("status"), "Job is ready");
+
+        // Вывод результата
+        thirdResponse.prettyPrint();
+    }
+
+    // Функция для выполнения GET-запроса без параметров
+    private JsonPath makeGetRequest(String url) {
+        return RestAssured
+                .given()
+                .get(url)
+                .jsonPath();
+    }
+
+    // Функция для выполнения GET-запроса с токеном
+    private JsonPath makeGetRequestWithToken(String url, String token) {
+        return RestAssured
+                .given()
+                .queryParam("token", token)
+                .get(url)
+                .jsonPath();
+    }
+
+    // Метод для проверки статуса
+    private void checkStatus(String actualStatus, String expectedStatus) {
+        if (expectedStatus.equals(actualStatus)) {
+            System.out.println("Current status is: \"" + actualStatus + "\" - Test Passed");
+        } else {
+            System.out.println("Current status is not OK. Expected: \"" + expectedStatus + "\", but got: \"" + actualStatus + "\"");
+        }
+    }
+
+    // Метод для ожидания завершения задачи
+    private void waitForDelay(int delayInSeconds) {
+        try {
+            TimeUnit.SECONDS.sleep(delayInSeconds);
+        } catch (InterruptedException e) {
+            throw new RuntimeException("Delay was interrupted", e);
+        }
+    }
+}

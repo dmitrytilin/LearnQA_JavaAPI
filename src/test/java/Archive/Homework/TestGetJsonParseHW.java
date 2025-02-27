@@ -1,4 +1,4 @@
-package Homework;
+package Archive.Homework;
 
 import io.restassured.RestAssured;
 import io.restassured.path.json.JsonPath;

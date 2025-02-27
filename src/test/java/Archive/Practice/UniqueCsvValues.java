@@ -1,4 +1,4 @@
-package Practice;
+package Archive.Practice;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.*;

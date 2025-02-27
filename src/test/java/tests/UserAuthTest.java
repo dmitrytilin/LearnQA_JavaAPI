@@ -13,10 +13,6 @@ import org.junit.jupiter.params.provider.ValueSource;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-
 public class UserAuthTest extends BaseTestCase{
   String cookie, header;
   int userIdOnAuth;
@@ -49,6 +45,8 @@ public class UserAuthTest extends BaseTestCase{
 
     Assertions.assertJsonByName(responseCheckAuth, "user_id", this.userIdOnAuth);
   }
+
+
 
   @ParameterizedTest
   @ValueSource(strings = {"cookie", "headers"})

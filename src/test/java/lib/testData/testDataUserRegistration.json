@@ -1,0 +1,67 @@
+[
+    {
+      "email": "regTestUser02test.te",
+      "password": "someTestPass1",
+      "username": "regTestUser02",
+      "firstName": "regTest",
+      "lastName": "regUser",
+      "expectedErrorMessage": "Invalid email format"
+    },
+    {
+      "email": "",
+      "password": "someTestPass3",
+      "username": "regTestUser03",
+      "firstName": "regTest",
+      "lastName": "regUser",
+      "expectedErrorMessage": "The value of 'email' field is too short"
+    },
+    {
+      "email": "regTestUser03@test.te",
+      "password": "",
+      "username": "regTestUser03",
+      "firstName": "regTest",
+      "lastName": "regUser",
+      "expectedErrorMessage": "The value of 'password' field is too short"
+    },
+    {
+      "email": "regTestUser04@test.te",
+      "password": "someTestPass4",
+      "username": "",
+      "firstName": "regTest",
+      "lastName": "regUser",
+      "expectedErrorMessage": "The value of 'username' field is too short"
+    },
+    {
+      "email": "regTestUser05@test.te",
+      "password": "someTestPass5",
+      "username": "regTestUser05",
+      "firstName": "",
+      "lastName": "regUser",
+      "expectedErrorMessage": "The value of 'firstName' field is too short"
+    },
+    {
+      "email": "regTestUser06@test.te",
+      "password": "someTestPass6",
+      "username": "regTestUser06",
+      "firstName": "regTest",
+      "lastName": "",
+      "expectedErrorMessage": "The value of 'lastName' field is too short"
+    },
+    {
+      "email": "r",
+      "password": "someTestPass7",
+      "username": "regTestUser07",
+      "firstName": "regTest",
+      "lastName": "regUser",
+      "expectedErrorMessage": "The value of 'email' field is too short"
+    },
+    {
+      "email": "IntherhythmofthenightrstarswhispersecretswhilethemoonwatchesoverdreamersreachbreathisafreshstartraninvitationtoexploretheunknownandembraceadventurerThroughchallengingpathwaysandunexpectedtwistsrhopeguidesthewayrremindingusofthestrengthwithinandthebeautyofeachmomenty",
+      "password": "someTestPass256",
+      "username": "regTestUser256",
+      "firstName": "regTest",
+      "lastName": "regUser",
+      "expectedErrorMessage": "The value of 'email' field is too long"
+    }
+]
+

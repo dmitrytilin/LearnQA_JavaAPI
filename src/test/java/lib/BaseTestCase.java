@@ -1,14 +1,20 @@
 package lib;
 
+import io.restassured.RestAssured;
 import io.restassured.http.Headers;
+import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 
+import java.io.File;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import static org.hamcrest.Matchers.hasKey;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class BaseTestCase {
+
   protected String getHeader(Response Response, String name){
     Headers headers = Response.getHeaders();
 
@@ -27,6 +33,5 @@ public class BaseTestCase {
     Response.then().assertThat().body("$", hasKey(name));
     return Response.jsonPath().getInt(name);
   }
-
 
 }

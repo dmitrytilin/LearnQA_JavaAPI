@@ -18,6 +18,8 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 @Epic("LearnQA auto Java")
 @Feature("Авторизация")
+@DisplayName("Тест авторизации пользователя")
+
 public class UserAuthTest extends BaseTestCase{
   String cookie, header;
   int userIdOnAuth;

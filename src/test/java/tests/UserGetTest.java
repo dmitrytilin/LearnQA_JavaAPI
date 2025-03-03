@@ -1,55 +1,103 @@
 package tests;
 
+import io.qameta.allure.*;
 import io.restassured.response.Response;
 import lib.ApiCoreRequests;
+import lib.UserHelper;
 import lib.Assertions;
 import lib.BaseTestCase;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import io.qameta.allure.Description;
-import io.qameta.allure.Epic;
-import io.qameta.allure.Feature;
-
 
 import java.util.HashMap;
 import java.util.Map;
 
+@Epic("LearnQA auto Java")
+@Feature("Получение данных")
+@DisplayName("Тест Получения данных пользователя")
 
 public class UserGetTest extends BaseTestCase {
-  String url = "https://playground.learnqa.ru/api/user/2";
+  String url = Constants.BASE_URL + "/user/2";
   private final ApiCoreRequests apiCoreRequests = new ApiCoreRequests();
 
   @Test
-  @DisplayName("Получение данных не авторизованного пользователя")
-  @Description("Авторизует поль")
+  @Story("Получение данных не а/п")
+  @Owner("Tilin D.A.")
+  @DisplayName("Получение данных не а/п")
+  @Description("Попытка получения не данных а/п")
+
   public void testGetUserDataNotAuth() {
     Response responceUserData = apiCoreRequests.makeGetRequestNullOrMap(url, null);
 
     Assertions.assertJsonHasField(responceUserData, "username");
     Assertions.assertJsonHasNotFields(responceUserData,
-            new String[]{"firstName", "lastName", "email"});
-    //System.out.println(responceUserData.asString());
-
+            new String[]{
+                    "firstName",
+                    "lastName",
+                    "email"
+            });
   }
 
   @Test
-  @DisplayName("Получение данных авторизованного пользователя")
+  @Story("Получение данных а/п")
+  @Owner("Tilin D.A.")
+  @DisplayName("Получение данных а/п")
+  @Description("Попытка получения данных а/п")
+
   public void testGetUserDetailsAuthAsSameUser() {
-    String url = "https://playground.learnqa.ru/api/user/login";
+    UserHelper userHelper = new UserHelper();
+    userHelper.userAuth();
 
-    Map<String,String> authData = new HashMap<>();
-    authData.put("email", "vinkotov@example.com");
-    authData.put("password", "1234");
-    Response responseGetAuth = apiCoreRequests.makePostRequest(url, authData);
+    Map<String, String> authData = new HashMap<>();
+    authData.put("x-csrf-token", userHelper.getHeader());
+    authData.put("auth_sid", userHelper.getCookie());
 
-    authData = new HashMap<>();
-    authData.put("x-csrf-token", getHeader(responseGetAuth, "x-csrf-token"));
-    authData.put("auth_sid", getCookie(responseGetAuth, "auth_sid"));
-    url = "https://playground.learnqa.ru/api/user/2";
+    url = Constants.BASE_URL + "/user/" + userHelper.getUserIdOnAuth();
 
-    responseGetAuth = apiCoreRequests.makeGetRequestNullOrMap(url, authData);
-    Assertions.assertJsonHasFields(responseGetAuth, new String[] {"id", "username", "email" , "firstName", "lastName"});
-    responseGetAuth.print();
+    Response responseGetAuth = apiCoreRequests.makeGetRequestNullOrMap(url, authData);
 
+    Assertions.assertJsonHasFields(responseGetAuth, new String[]{
+            "id",
+            "username",
+            "email",
+            "firstName",
+            "lastName"
+    });
+  }
+
+  @Test
+  @Story("Получение данных а/п под другим пользователем")
+  @Owner("Tilin D.A.")
+  @DisplayName("Получение данных а/п под другим пользователем")
+  @Description("Попытка получения Получение данных а/п под другим пользователем")
+
+  public void testGetUserDetailsAuthAsOtherUser() {
+    // Создаем нового пользователя, получаем user_id
+    UserHelper userHelper = new UserHelper();
+    userHelper.userRegister();
+    int userID = userHelper.getUserIdOnRegister();
+
+    //Авторизуемся под vinkotov@example.com, получаем x-csrf-token и auth_sid
+    userHelper.userAuth();
+    Map<String, String> authData = new HashMap<>();
+    authData.put("x-csrf-token", userHelper.getHeader());
+    authData.put("auth_sid", userHelper.getCookie());
+
+    //Запрашиваем данные по эндпоинту с user_id нового пользователя
+    // с x-csrf-token и auth_sid пользователя vinkotov@example.com
+
+    Response responceUserData = apiCoreRequests.makeGetRequestNullOrMap(
+            Constants.BASE_URL + "/user/" + userID,
+            authData
+    );
+
+    Assertions.assertJsonHasField(responceUserData, "username");
+    Assertions.assertJsonHasNotFields(responceUserData,
+            new String[]{
+                    "firstName",
+                    "lastName",
+                    "email"
+            });
   }
 }
+

@@ -1,19 +1,18 @@
 package lib;
 
-import io.restassured.RestAssured;
-import io.restassured.http.Headers;
-import io.restassured.path.json.JsonPath;
-import io.restassured.response.Response;
 
-import java.io.File;
-import java.util.List;
+import io.restassured.http.Headers;
+import io.restassured.response.Response;
 import java.util.Map;
-import java.util.stream.Stream;
 
 import static org.hamcrest.Matchers.hasKey;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class BaseTestCase {
+
+  public static class Constants {
+    public static final String BASE_URL = "https://playground.learnqa.ru/api";
+  }
 
   protected String getHeader(Response Response, String name){
     Headers headers = Response.getHeaders();

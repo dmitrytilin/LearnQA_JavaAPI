@@ -10,6 +10,7 @@ import java.util.Map;
 
 import static io.restassured.RestAssured.given;
 
+
 public class ApiCoreRequests {
   @Step("Выполнение GET запроса с токеном и куки")
   public Response makeGetRequest(String url, String token, String cookie) {
@@ -39,7 +40,7 @@ public class ApiCoreRequests {
             .andReturn();
   }
 
-  @Step("Выполнение POST запроса Авторизации")
+  @Step("Выполнение POST запроса")
   public Response makePostRequest(String url, Map<String, String> authData) {
     return  given()
             .filter(new AllureRestAssured())
@@ -49,8 +50,8 @@ public class ApiCoreRequests {
             .andReturn();
   }
 
-  @Step("Выполнение GET запроса данных или с Хедером и Кукой")
-  // Универсальная функция для выполнения GET-запроса данных или с Хедером и Кукой
+  @Step("Выполнение GET запроса без данных или с Хедером и Кукой")
+  // Универсальная функция для выполнения GET-запроса без данных или с Хедером и Кукой
   public Response makeGetRequestNullOrMap(String url,Map<String, String> data) {
     if (data == null) {
       return RestAssured

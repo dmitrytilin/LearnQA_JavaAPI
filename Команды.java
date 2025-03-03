@@ -27,3 +27,5 @@ params.put("name", "Dmitry");
 	
 	
 }
+
+allure serve allure-results - просмотр результатов тестов в аллюр

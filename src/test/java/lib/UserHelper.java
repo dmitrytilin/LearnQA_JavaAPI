@@ -118,5 +118,7 @@ public class UserHelper extends BaseTestCase{
     responseGetUserData  = apiCoreRequests.makeDeleteRequest(
             Constants.BASE_URL + "/user/" + user_id, data);
   }
-
+  public Response getUserDeleteData() {
+    return responseGetUserData;
+  }
 }

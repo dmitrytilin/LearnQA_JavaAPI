@@ -29,6 +29,14 @@ public class Assertions {
             "Responce text is unexpected"
     );
   }
+  public static void assertResponceTextEquals(Response Responce,String stringName, String expectedAnswer){
+    assertEquals(
+            expectedAnswer,
+            Responce.jsonPath().getString(stringName),
+            "Responce text is unexpected"
+    );
+  }
+
 
   public static void assertResponceCodeEquals(Response Responce, Integer expectedStatusCode){
     assertEquals(
@@ -56,6 +64,8 @@ public class Assertions {
       assertJsonHasNotField(Response, expectedFieldName);
     }
   }
+
+
 
 }
 

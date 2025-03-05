@@ -5,7 +5,6 @@ import io.qameta.allure.restassured.AllureRestAssured;
 import io.restassured.RestAssured;
 import io.restassured.http.Header;
 import io.restassured.response.Response;
-import io.restassured.specification.ProxySpecification;
 
 import java.util.Map;
 
@@ -93,6 +92,7 @@ public class ApiCoreRequests {
     String xCsrfToken = data.remove("x-csrf-token");
 
     return given()
+            //.log().all()
             .filter(new AllureRestAssured())
             .header(new Header("x-csrf-token", xCsrfToken))
             .cookie("auth_sid", authSid)

@@ -68,9 +68,8 @@ public class UserEditTest extends BaseTestCase {
   @DisplayName("Попытка изменить пользователя другим пользователем")
   public void testEditAuthOtherUser() {
     // Создание второго пользователя
-    UserHelper otherUserHelper = new UserHelper();
-    otherUserHelper.userRegister();
-    int otherUserId = otherUserHelper.getUserIdOnRegister();
+    userHelper.userRegister();
+    int otherUserId = userHelper.getUserIdOnRegister();
 
     // Редактирование данных второго пользователя первым пользователем
     userHelper.userEdit(header, cookie, "username", "EditedUserName", otherUserId);

@@ -46,7 +46,7 @@ public class UserGetTest extends BaseTestCase {
 
   public void testGetUserDetailsAuthAsSameUser() {
     UserHelper userHelper = new UserHelper();
-    userHelper.userAuth();
+    userHelper.userAuth("vinkotov@example.com","1234");
 
     Map<String, String> authData = new HashMap<>();
     authData.put("x-csrf-token", userHelper.getHeader());
@@ -78,7 +78,7 @@ public class UserGetTest extends BaseTestCase {
     int userID = userHelper.getUserIdOnRegister();
 
     //Авторизуемся под vinkotov@example.com, получаем x-csrf-token и auth_sid
-    userHelper.userAuth();
+    userHelper.userAuth("vinkotov@example.com","1234");
     Map<String, String> authData = new HashMap<>();
     authData.put("x-csrf-token", userHelper.getHeader());
     authData.put("auth_sid", userHelper.getCookie());

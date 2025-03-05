@@ -28,7 +28,7 @@ public class UserAuthTest extends BaseTestCase{
   @BeforeEach
   public void loginUser(){
     UserHelper userHelper = new UserHelper();
-    userHelper.userAuth();
+    userHelper.userAuth("vinkotov@example.com","1234");
   }
 
   @Test

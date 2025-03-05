@@ -9,22 +9,24 @@ import java.util.Map;
 
 public class UserHelper extends BaseTestCase{
 
-  private String cookie, header;
-  private int userIdOnAuth, user_id;
-  private Response responseGetRegistration;
+  private String cookie, header, email, password, firstName;
+  private int userIdOnAuth, userId;
+  private Response responseGetRegistration, responseGetAuth, responseGetUserData;
 
   private final ApiCoreRequests apiCoreRequests = new ApiCoreRequests();
 
-  @Step("Авторизация пользователем vinkotov@example.com")
-  public void userAuth() {
+  @Step("Авторизация пользователем")
+  public void userAuth(String email, String password) {
     // Данные для авторизации
     Map<String, String> authData = new HashMap<>();
-    authData.put("email", "vinkotov@example.com");
-    authData.put("password", "1234");
+    authData.put("email", email);
+    authData.put("password", password);
 
     // Выполнение запроса на авторизацию
     Response responseGetAuth = apiCoreRequests.makePostRequest(
             Constants.BASE_URL + "/user/login", authData);
+
+    responseGetAuth.prettyPrint();
 
     // Получение данных из ответа
     this.cookie = this.getCookie(responseGetAuth, "auth_sid");
@@ -45,9 +47,13 @@ public class UserHelper extends BaseTestCase{
     return userIdOnAuth;
   }
 
+  public Response getAuthResponce(){
+    return responseGetAuth;
+  }
+
   @Step("Регистрация нового пользователя с уникальным Email")
   public void userRegister() {
-    String email = DataGenerator.getRandomEmail();
+    email = DataGenerator.getRandomEmail();
 
     Map<String, String> userTestData = new HashMap<>();
     userTestData.put("email", email);
@@ -59,14 +65,51 @@ public class UserHelper extends BaseTestCase{
     responseGetRegistration  = apiCoreRequests.makePostRequest(
             Constants.BASE_URL + "/user/", userTestData);
 
-    this.user_id = this.getIntFromJson(responseGetRegistration, "id");
+    this.userId = this.getIntFromJson(responseGetRegistration, "id");
+    this.password = userTestData.get("password");
+    this.firstName = userTestData.get("firstName");
   }
 
   public int getUserIdOnRegister() {
-    return user_id;
+    return userId;
   }
 
   public Response getRegistrationResponce() {
     return responseGetRegistration;
   }
+
+  public String getEmail() {
+    return email;
+  }
+
+  public String getPassword() {
+    return password;
+  }
+
+  public String getFirstName() {
+    return firstName;
+  }
+
+  @Step("Редактирование пользователя")
+  public void userEdit(String header, String cookie, String fieldName, String fieldValue, int user_id){
+    Map<String, String> data = new HashMap<>();
+    data.put("x-csrf-token",this.header);
+    data.put("auth_sid",this.cookie);
+    data.put(fieldName,fieldValue);
+
+    responseGetUserData  = apiCoreRequests.makePutRequest(
+            Constants.BASE_URL + "/user/" + user_id, data);
+  }
+
+  public void userGetData(String header, String cookie, int user_id){
+    responseGetUserData  = apiCoreRequests.makeGetRequest(
+            Constants.BASE_URL + "/user/" + user_id, this.header, this.cookie);
+  }
+
+  public Response getUserData() {
+    return responseGetUserData;
+  }
+
+
+
 }

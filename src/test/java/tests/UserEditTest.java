@@ -13,49 +13,69 @@ import org.junit.jupiter.api.Test;
 @Feature("Редактирование пользователя")
 @DisplayName("Тест Редактирования Пользователя")
 public class UserEditTest extends BaseTestCase {
+  private final UserHelper userHelper = new UserHelper();
+
+  private Object[] createUser() {
+    userHelper.userRegister();
+    userHelper.userAuth(userHelper.getEmail(), userHelper.getPassword());
+    email = userHelper.getEmail();
+    password = userHelper.getPassword();
+    firstUserId = userHelper.getUserIdOnRegister();
+
+    return new Object[]{email, password, firstUserId};
+  }
+
+  Object[] createdUserData = createUser();
+  String email = (String) createdUserData[0];
+  String password = (String) createdUserData[1];
+  int firstUserId = (int) createdUserData[2];
+
+  private Object[] authUser(String email, String password) {
+    userHelper.userAuth(email, password);
+    cookie = userHelper.getCookie();
+    header =userHelper.getHeader();
+    secondUserId = userHelper.getUserIdOnAuth();
+
+    return new Object[]{cookie, header, secondUserId};
+  }
+
+  Object[] authUserData = authUser(email, password);
+  String cookie = (String) authUserData[0];
+  String header = (String) authUserData[1];
+  int secondUserId = (int) authUserData[2];
 
   @Test
   @Story("Успешное редактирование вновь созданного пользователя")
   @Owner("Tilin D.A.")
   @DisplayName("Позитивный тест редактирования")
   public void testEditCorrect(){
-    //Создается новый пользователь с рандомным Email
-    UserHelper userHelper = new UserHelper();
-    userHelper.userRegister();
-    String email = userHelper.getEmail();
-    String password = userHelper.getPassword();
-
-    //Авторизация созданным пользователем
-    userHelper.userAuth(email, password);
-    String header = userHelper.getHeader();
-    String cookie = userHelper.getCookie();
-    int userId = userHelper.getUserIdOnAuth();
 
     //Редактирование данных пользователя
     String newName = "EditedUserName";
-    userHelper.userEdit(header, cookie,"username", newName, userId);
+    userHelper.userEdit(header, cookie,"username", newName, secondUserId);
 
     //Получение данных пользователя
-    userHelper.userGetData(header,cookie,userId);
+    userHelper.userGetData(header,cookie,secondUserId);
     Assertions.assertJsonByName(userHelper.getUserData(),"username", newName);
   }
 
   @Test
   @Story("Редактирование неавторизованного пользователя")
   @Owner("Tilin D.A.")
-  @DisplayName("Попытка редактирвоать пользователя без авторизации")
+  @DisplayName("Попытка редактировать пользователя без авторизации")
   public void testEditUnAthUser(){
-    //Создается новый пользователь с рандомным Email
-    UserHelper userHelper = new UserHelper();
-    userHelper.userRegister();
-    int userId = userHelper.getUserIdOnAuth();
 
     //Редактирование данных пользователя
     String newName = "EditedUserName";
-    userHelper.userEdit(null, null,"username", newName, userId);
+    userHelper.userEdit(
+            null,
+            null,
+            "username",
+            newName,
+            firstUserId);
 
-    Assertions.assertJsonHasField(userHelper.getUserData(), "error");
-    Assertions.assertJsonHasNotField(userHelper.getUserData(),"success");
+    Assertions.assertJsonHasField(userHelper.getUserEditedData(), "error");
+    Assertions.assertJsonHasNotField(userHelper.getUserEditedData(),"success");
 
   }
 
@@ -64,19 +84,8 @@ public class UserEditTest extends BaseTestCase {
   @Owner("Tilin D.A.")
   @DisplayName("Попытка изменить пользователя, другим пользователем")
   public void testEditAthOtherUser() {
-    //Создается новый пользователь с рандомным Email
-    UserHelper userHelper = new UserHelper();
-    userHelper.userRegister();
-    String email = userHelper.getEmail();
-    String password = userHelper.getPassword();
-
     userHelper.userRegister();
     int userId = userHelper.getUserIdOnRegister();
-
-    //Авторизация пользователем
-    userHelper.userAuth(email, password);
-    String header = userHelper.getHeader();
-    String cookie = userHelper.getCookie();
 
     //Редактирование данных пользователя
     String newName = "EditedUserName";
@@ -85,7 +94,6 @@ public class UserEditTest extends BaseTestCase {
     Assertions.assertJsonHasField(userHelper.getUserData(), "error");
     Assertions.assertJsonHasNotField(userHelper.getUserData(),"success");
 
-    //userHelper.getUserData().prettyPrint();
   }
 
   @Test
@@ -93,26 +101,14 @@ public class UserEditTest extends BaseTestCase {
   @Owner("Tilin D.A.")
   @DisplayName("Попытка изменения Email на некорректный")
   public void testEditInCorrectEmail(){
-    //Создается новый пользователь с рандомным Email
-    UserHelper userHelper = new UserHelper();
-    userHelper.userRegister();
-    String email = userHelper.getEmail();
-    String password = userHelper.getPassword();
-
-    //Авторизация созданным пользователем
-    userHelper.userAuth(email, password);
-    String header = userHelper.getHeader();
-    String cookie = userHelper.getCookie();
-    int userId = userHelper.getUserIdOnAuth();
 
     //Редактирование данных пользователя
     String newName = "testtest.ru";
-    userHelper.userEdit(header, cookie,"email", newName, userId);
+    userHelper.userEdit(header, cookie,"email", newName, secondUserId);
     Assertions.assertJsonHasField(userHelper.getUserData(), "error");
 
-
     //Получение данных пользователя
-    userHelper.userGetData(header,cookie,userId);
+    userHelper.userGetData(header,cookie,secondUserId);
     Assertions.assertJsonByName(userHelper.getUserData(),"email", email);
   }
 
@@ -121,29 +117,16 @@ public class UserEditTest extends BaseTestCase {
   @Owner("Tilin D.A.")
   @DisplayName("Попытка изменения firstName на некорректный")
   public void testEditShortFirstName(){
-    //Создается новый пользователь с рандомным Email
-    UserHelper userHelper = new UserHelper();
-    userHelper.userRegister();
-    String email = userHelper.getEmail();
-    String password = userHelper.getPassword();
 
-    //Авторизация созданным пользователем
-    userHelper.userAuth(email, password);
-    String header = userHelper.getHeader();
-    String cookie = userHelper.getCookie();
     String firstName  = userHelper.getFirstName();
-    int userId = userHelper.getUserIdOnAuth();
 
     //Редактирование данных пользователя
     String newName = "t";
-    userHelper.userEdit(header, cookie,"firstName", newName, userId);
-
+    userHelper.userEdit(header, cookie,"firstName", newName, secondUserId);
     Assertions.assertJsonHasField(userHelper.getUserData(), "error");
 
-
     //Получение данных пользователя
-    userHelper.userGetData(header,cookie,userId);
-
+    userHelper.userGetData(header,cookie,secondUserId);
     Assertions.assertJsonByName(userHelper.getUserData(),"firstName", firstName);
   }
 

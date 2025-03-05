@@ -5,6 +5,7 @@ import io.qameta.allure.restassured.AllureRestAssured;
 import io.restassured.RestAssured;
 import io.restassured.http.Header;
 import io.restassured.response.Response;
+import io.restassured.specification.ProxySpecification;
 
 import java.util.Map;
 
@@ -12,9 +13,11 @@ import static io.restassured.RestAssured.given;
 
 
 public class ApiCoreRequests {
+
   @Step("Выполнение GET запроса с токеном и куки")
   public Response makeGetRequest(String url, String token, String cookie) {
     return  given()
+
             .filter(new AllureRestAssured())
             .header(new Header("x-csrf-token", token))
             .cookie("auth_sid", cookie)
@@ -43,6 +46,7 @@ public class ApiCoreRequests {
   @Step("Выполнение POST запроса")
   public Response makePostRequest(String url, Map<String, String> authData) {
     return  given()
+            //.log().all()
             .filter(new AllureRestAssured())
             .body(authData)
             //.log().body()
